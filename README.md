@@ -1,33 +1,33 @@
-# 🚌 BusGo - Sistem Pemesanan Tiket Bus Modern
+# BusGo - Sistem Pemesanan Tiket Bus Modern
 
 BusGo adalah platform pemesanan tiket bus berbasis web yang dikembangkan khusus untuk memudahkan proses reservasi kursi, pembayaran, dan manajemen manifest penumpang. Sistem ini dirancang untuk menangani seluruh alur kerja operasional tiket bus mulai dari pelanggan memesan tiket secara mandiri, verifikasi oleh admin, hingga proses *check-in* (scan tiket) oleh petugas lapangan.
 
 ---
 
-## 🎯 Fitur Utama (Berdasarkan Kebutuhan Sistem)
+## Fitur Utama (Berdasarkan Kebutuhan Sistem)
 
 Aplikasi ini memiliki **3 Role / Hak Akses** yang saling terintegrasi:
 
-### 1. 👤 Customer (Pelanggan)
+### 1. Customer (Pelanggan)
 - **Pencarian Tiket**: Mencari jadwal bus berdasarkan kota asal dan tujuan.
 - **Booking Kursi Interaktif**: Memilih kursi (Seat Layout) secara *real-time*.
 - **Upload Bukti Pembayaran**: Melakukan checkout dan mengunggah foto bukti transfer.
 - **E-Ticket & QR Code**: Mendapatkan tiket digital (*E-Ticket*) yang dilengkapi dengan **QR Code** untuk kemudahan validasi saat akan naik bus.
 
-### 2. 🛡️ Admin (Pengelola)
+### 2. Admin (Pengelola)
 - **Dashboard Ringkasan**: Melihat statistik harian, total pendapatan, dan tiket yang menunggu validasi.
 - **Verifikasi Pembayaran**: Menerima/Menolak bukti transfer dari pelanggan.
 - **Cetak Surat Jalan (Manifest PDF)**: Mengunduh Surat Jalan / Manifest Penumpang berformat PDF untuk diserahkan kepada Supir sebelum bus berangkat.
 - **Laporan Pemesanan**: Melihat riwayat lengkap pesanan tiket yang sudah berhasil dibayar.
 
-### 3. 🎫 Checker (Petugas Terminal)
+### 3. Checker (Petugas Terminal)
 - **Scan QR Code**: Memindai tiket pelanggan langsung menggunakan kamera *Smartphone* atau Laptop (tanpa aplikasi tambahan, *pure* berbasis web).
 - **Update Status Penumpang**: Mengubah status penumpang menjadi "Hadir" secara otomatis setelah tiket berhasil dipindai.
 - **Manifest Kehadiran**: Mengecek daftar penumpang yang sudah *boarding*.
 
 ---
 
-## 💻 Tech Stack
+## Tech Stack
 - **Framework**: Laravel 11 (Monolith)
 - **Styling**: Tailwind CSS v4 & Blade Components
 - **Database**: MySQL (via Eloquent ORM)
@@ -38,7 +38,7 @@ Aplikasi ini memiliki **3 Role / Hak Akses** yang saling terintegrasi:
 
 ---
 
-## 🚀 Panduan Instalasi (Lokal)
+## Panduan Instalasi (Lokal)
 
 Jika Anda ingin menjalankan proyek ini secara lokal, ikuti langkah-langkah berikut:
 
@@ -103,5 +103,3 @@ Gunakan akun-akun berikut untuk menguji coba masing-masing role:
 7. Di *device* lain (atau di *tab* baru), login sebagai **Checker**. Buka menu "Scan Sekarang".
 8. Arahkan kamera ke arah QR Code milik tiket Customer tadi. Data akan langsung terverifikasi secara otomatis!
 
----
-*Dibuat untuk keperluan Wawancara / Technical Test Role Software Engineer.*
