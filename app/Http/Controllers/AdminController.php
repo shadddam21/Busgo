@@ -38,24 +38,37 @@ class AdminController extends Controller
 
     public function verifyPayment(Request $request, Payment $payment)
     {
-        $payment->update(['status' => 'verified']);
-        $payment->order->update(['status' => 'confirmed']); // QR Token is generated at creation
+        /**
+         * MENGGUNAKAN DATABASE TRANSACTION
+         * DB::transaction digunakan untuk menjaga integritas data saat
+         * mengupdate status Pembayaran dan status Pesanan secara bersamaan.
+         */
+        \Illuminate\Support\Facades\DB::transaction(function () use ($payment) {
+            $payment->update(['status' => 'verified']);
+            $payment->order->update(['status' => 'confirmed']); // QR Token telah di-generate secara otomatis saat pembuatan pesanan
+        });
 
         return back()->with('success', 'Pembayaran berhasil diverifikasi.');
     }
 
     public function rejectPayment(Request $request, Payment $payment)
     {
-        $payment->update(['status' => 'rejected']);
-        $payment->order->update(['status' => 'cancelled']);
-        
-        // Free up the seat
-        $payment->order->seat->update(['status' => 'available']);
+        /**
+         * Transaksi digunakan untuk memastikan ketersediaan kursi kembali
+         * secara atomic bersamaan dengan pembatalan order dan penolakan pembayaran.
+         */
+        \Illuminate\Support\Facades\DB::transaction(function () use ($payment) {
+            $payment->update(['status' => 'rejected']);
+            $payment->order->update(['status' => 'cancelled']);
+            
+            // Mengembalikan status kursi menjadi tersedia untuk dipesan kembali
+            $payment->order->seat->update(['status' => 'available']);
+        });
 
         return back()->with('success', 'Pembayaran ditolak. Kursi kembali tersedia.');
     }
 
-    // Mock other pages for now
+
     public function schedules() { 
         $schedules = Schedule::with(['route.origin', 'route.destination'])->orderBy('departure_date', 'desc')->get();
         return view('admin.schedules.index', compact('schedules')); 
@@ -86,7 +99,7 @@ class AdminController extends Controller
             'total_seats' => 40
         ]);
 
-        // Generate Seats (A1-A10, B1-B10, C1-C10, D1-D10)
+        // Inisialisasi kapasitas 40 kursi secara otomatis (Layout: A, B, C, D)
         $rows = ['A', 'B', 'C', 'D'];
         foreach ($rows as $row) {
             for ($num = 1; $num <= 10; $num++) {
@@ -130,9 +143,15 @@ class AdminController extends Controller
 
     public function deleteSchedule(Schedule $schedule)
     {
-        // Delete seats related to this schedule first (or rely on cascading foreign keys, but safe to delete manually if needed)
-        \App\Models\Seat::where('schedule_id', $schedule->id)->delete();
-        $schedule->delete();
+        /**
+         * Hapus data child (seats) secara eksplisit di dalam transaksi
+         * sebelum menghapus parent (schedule) untuk mencegah masalah referensial.
+         */
+        \Illuminate\Support\Facades\DB::transaction(function () use ($schedule) {
+            // Hapus entitas relasional (kursi) terlebih dahulu untuk menjaga integritas struktural database
+            \App\Models\Seat::where('schedule_id', $schedule->id)->delete();
+            $schedule->delete();
+        });
 
         return redirect('/admin/schedules')->with('success', 'Jadwal berhasil dihapus.');
     }
@@ -182,28 +201,36 @@ class AdminController extends Controller
             return back()->withErrors(['schedule_id' => 'Jadwal ini sudah penuh (tidak ada kursi tersedia).']);
         }
 
-        $order = Order::create([
-            'order_code' => 'ORD-' . strtoupper(\Illuminate\Support\Str::random(8)),
-            'user_id' => $user->id,
-            'schedule_id' => $schedule->id,
-            'seat_id' => $seat->id,
-            'total_price' => $schedule->price,
-            'status' => 'confirmed', 
-            'qr_token' => (string) \Illuminate\Support\Str::uuid(),
-            'is_qr_used' => false
-        ]);
+        /**
+         * MENGGUNAKAN DATABASE TRANSACTION
+         * Pembuatan pesanan manual melibatkan insersi data User, Order, Payment,
+         * dan modifikasi Seat. Operasi ini harus dibungkus dalam transaksi 
+         * untuk mencegah terjadinya inkonsistensi relasional.
+         */
+        \Illuminate\Support\Facades\DB::transaction(function () use ($user, $schedule, $seat) {
+            $order = Order::create([
+                'order_code' => 'ORD-' . strtoupper(\Illuminate\Support\Str::random(8)),
+                'user_id' => $user->id,
+                'schedule_id' => $schedule->id,
+                'seat_id' => $seat->id,
+                'total_price' => $schedule->price,
+                'status' => 'confirmed', 
+                'qr_token' => (string) \Illuminate\Support\Str::uuid(),
+                'is_qr_used' => false
+            ]);
 
-        Payment::create([
-            'order_id' => $order->id,
-            'user_id' => $user->id,
-            'bank_name' => 'CASH/MANUAL',
-            'account_name' => 'ADMIN: ' . \Illuminate\Support\Facades\Auth::user()->name,
-            'amount' => $schedule->price,
-            'proof_image' => 'manual',
-            'status' => 'verified'
-        ]);
+            Payment::create([
+                'order_id' => $order->id,
+                'user_id' => $user->id,
+                'bank_name' => 'CASH/MANUAL',
+                'account_name' => 'ADMIN: ' . \Illuminate\Support\Facades\Auth::user()->name,
+                'amount' => $schedule->price,
+                'proof_image' => 'manual',
+                'status' => 'verified'
+            ]);
 
-        $seat->update(['status' => 'booked']);
+            $seat->update(['status' => 'booked']);
+        });
 
         return redirect('/admin/orders')->with('success', 'Pesanan manual berhasil dibuat untuk kursi: ' . $seat->seat_number);
     }
@@ -222,14 +249,6 @@ class AdminController extends Controller
         $pdf = \Barryvdh\DomPDF\Facade\Pdf::loadView('admin.driver_letters.pdf', compact('schedule', 'orders'));
         return $pdf->download('Surat-Jalan-BusGo-' . \Carbon\Carbon::parse($schedule->departure_date)->format('Ymd') . '-' . $schedule->id . '.pdf');
     }
-    public function cities() { 
-        $cities = City::all();
-        return view('admin.cities.index', compact('cities')); 
-    }
-    public function routes() { 
-        $routes = Route::with(['origin', 'destination'])->get();
-        return view('admin.routes.index', compact('routes')); 
-    }
     public function reports(Request $request) { 
         $startDate = $request->query('start_date', \Carbon\Carbon::now()->startOfMonth()->format('Y-m-d'));
         $endDate = $request->query('end_date', \Carbon\Carbon::now()->endOfMonth()->format('Y-m-d'));
@@ -245,5 +264,4 @@ class AdminController extends Controller
 
         return view('admin.reports.index', compact('orders', 'startDate', 'endDate', 'totalRevenue', 'totalTickets')); 
     }
-    public function users() { return view('admin.users.index'); }
 }

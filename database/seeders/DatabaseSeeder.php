@@ -84,5 +84,57 @@ class DatabaseSeeder extends Seeder
                 }
             }
         }
+
+        // 6. Dummy Orders (Confirmed Tickets for Testing Scanner)
+        $schedule = Schedule::first();
+        if ($schedule) {
+            $seat1 = Seat::where('schedule_id', $schedule->id)->where('status', 'available')->first();
+            if ($seat1) {
+                $seat1->update(['status' => 'booked']);
+                $order1 = \App\Models\Order::create([
+                    'order_code' => 'ORD-TEST111',
+                    'user_id' => $customers[0]->id,
+                    'schedule_id' => $schedule->id,
+                    'seat_id' => $seat1->id,
+                    'total_price' => $schedule->price,
+                    'status' => 'confirmed',
+                    'qr_token' => 'TEST-TOKEN-111',
+                    'is_qr_used' => false
+                ]);
+                \App\Models\Payment::create([
+                    'order_id' => $order1->id,
+                    'user_id' => $customers[0]->id,
+                    'bank_name' => 'BCA',
+                    'account_name' => 'Customer 1',
+                    'amount' => $schedule->price,
+                    'proof_image' => 'dummy',
+                    'status' => 'verified'
+                ]);
+            }
+
+            $seat2 = Seat::where('schedule_id', $schedule->id)->where('status', 'available')->first();
+            if ($seat2) {
+                $seat2->update(['status' => 'booked']);
+                $order2 = \App\Models\Order::create([
+                    'order_code' => 'ORD-TEST222',
+                    'user_id' => $customers[1]->id,
+                    'schedule_id' => $schedule->id,
+                    'seat_id' => $seat2->id,
+                    'total_price' => $schedule->price,
+                    'status' => 'confirmed',
+                    'qr_token' => 'TEST-TOKEN-222',
+                    'is_qr_used' => false
+                ]);
+                \App\Models\Payment::create([
+                    'order_id' => $order2->id,
+                    'user_id' => $customers[1]->id,
+                    'bank_name' => 'MANDIRI',
+                    'account_name' => 'Customer 2',
+                    'amount' => $schedule->price,
+                    'proof_image' => 'dummy',
+                    'status' => 'verified'
+                ]);
+            }
+        }
     }
 }

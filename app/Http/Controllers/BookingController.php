@@ -41,38 +41,48 @@ class BookingController extends Controller
         ]);
 
         $seat = Seat::findOrFail($request->seat_id);
+        
+        // Validasi ulang ketersediaan kursi untuk mencegah kondisi balapan data (race condition)
         if ($seat->status !== 'available') {
             return redirect()->route('booking.seat', $schedule->id)->withErrors(['seat' => 'Kursi baru saja dipesan orang lain.']);
         }
 
-        // Upload proof image
+        // Proses unggah dan simpan aset bukti pembayaran ke direktori penyimpanan lokal
         $imagePath = $request->file('proof_image')->store('payments', 'public');
 
-        // Create Order
-        $order = Order::create([
-            'order_code' => 'ORD-' . strtoupper(Str::random(8)),
-            'user_id' => Auth::id(),
-            'schedule_id' => $schedule->id,
-            'seat_id' => $seat->id,
-            'total_price' => $schedule->price,
-            'status' => 'pending',
-            'qr_token' => Str::uuid(),
-            'is_qr_used' => false
-        ]);
+        /**
+         * MENGGUNAKAN DATABASE TRANSACTION
+         * Transaksi ini menjamin sifat ACID (Atomik) untuk proses pemesanan.
+         * Pembuatan Order, Payment, dan penguncian Seat harus berhasil seluruhnya.
+         * Jika salah satu gagal, maka perubahan akan di-rollback untuk menghindari inkonsistensi.
+         */
+        \Illuminate\Support\Facades\DB::transaction(function () use ($schedule, $seat, $request, $imagePath) {
+            // 1. Inisiasi entitas Pesanan (Order)
+            $order = Order::create([
+                'order_code' => 'ORD-' . strtoupper(Str::random(8)),
+                'user_id' => Auth::id(),
+                'schedule_id' => $schedule->id,
+                'seat_id' => $seat->id,
+                'total_price' => $schedule->price,
+                'status' => 'pending',
+                'qr_token' => (string) Str::uuid(),
+                'is_qr_used' => false
+            ]);
 
-        // Create Payment
-        Payment::create([
-            'order_id' => $order->id,
-            'user_id' => Auth::id(),
-            'bank_name' => $request->bank_name,
-            'account_name' => $request->account_name,
-            'amount' => $schedule->price,
-            'proof_image' => $imagePath,
-            'status' => 'pending'
-        ]);
+            // 2. Inisiasi entitas Pembayaran (Payment) yang berelasi dengan Pesanan di atas
+            Payment::create([
+                'order_id' => $order->id,
+                'user_id' => Auth::id(),
+                'bank_name' => $request->bank_name,
+                'account_name' => $request->account_name,
+                'amount' => $schedule->price,
+                'proof_image' => $imagePath,
+                'status' => 'pending'
+            ]);
 
-        // Mark Seat as booked
-        $seat->update(['status' => 'booked']);
+            // 3. Modifikasi status kursi menjadi 'booked' untuk mengunci ketersediaan
+            $seat->update(['status' => 'booked']);
+        });
 
         return redirect('/customer/orders')->with('success', 'Pemesanan berhasil dibuat, menunggu verifikasi admin.');
     }

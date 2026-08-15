@@ -32,6 +32,12 @@ Route::prefix('customer')->middleware(['auth', 'role:customer'])->group(function
 // Booking Flow
 Route::middleware(['auth', 'role:customer'])->group(function () {
     Route::get('/booking/{schedule}', [BookingController::class, 'seat'])->name('booking.seat');
+    
+    // Redirect if user accesses checkout via GET (e.g., refresh or manual URL entry)
+    Route::get('/booking/{schedule}/checkout', function ($schedule) {
+        return redirect()->route('booking.seat', $schedule);
+    });
+    
     Route::post('/booking/{schedule}/checkout', [BookingController::class, 'checkout'])->name('booking.checkout');
     Route::post('/booking/{schedule}/process', [BookingController::class, 'process'])->name('booking.process');
 });
@@ -59,10 +65,7 @@ Route::prefix('admin')->middleware(['auth', 'role:admin'])->group(function () {
     Route::post('/orders', [AdminController::class, 'storeOrder']);
     Route::get('/driver-letters', [AdminController::class, 'driverLetters']);
     Route::get('/schedules/{schedule}/surat-jalan', [AdminController::class, 'downloadSuratJalan']);
-    Route::get('/cities', [AdminController::class, 'cities']);
-    Route::get('/routes', [AdminController::class, 'routes']);
     Route::get('/reports', [AdminController::class, 'reports']);
-    Route::get('/users', [AdminController::class, 'users']);
 });
 
 use App\Http\Controllers\CheckerController;
