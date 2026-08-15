@@ -78,7 +78,7 @@ Jika Anda ingin menjalankan proyek ini secara lokal, ikuti langkah-langkah berik
 
 ---
 
-## 🔐 Kredensial Akun Default (Testing)
+##  Kredensial Akun Default (Testing)
 
 Gunakan akun-akun berikut untuk menguji coba masing-masing role:
 
@@ -88,11 +88,11 @@ Gunakan akun-akun berikut untuk menguji coba masing-masing role:
 | **Checker** | `checker@busgo.com` | `password` |
 | **Customer** | `customer1@busgo.com` | `password` |
 
-*(Tersedia customer1@busgo.com hingga customer5@busgo.com untuk simulasi berbagai pelanggan)*
+*Tersedia customer1@busgo.com sampai customer5@busgo.com untuk simulasi berbagai pelanggan*
 
 ---
 
-## 📸 Panduan Simulasi Alur Kerja (End-to-End)
+##  Panduan Simulasi Alur Kerja (End-to-End)
 
 1. Login sebagai **Customer**, lalu coba lakukan pencarian tiket dari beranda.
 2. Pilih jadwal, lalu pilih kursi yang masih kosong (berwarna putih).
