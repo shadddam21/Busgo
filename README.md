@@ -1,74 +1,70 @@
-# BusGo - Sistem Pemesanan Tiket Bus Modern
+# BusGo - Sistem Manajemen Tiket Bus
 
-BusGo adalah platform pemesanan tiket bus berbasis web yang dikembangkan khusus untuk memudahkan proses reservasi kursi, pembayaran, dan manajemen manifest penumpang. Sistem ini dirancang untuk menangani seluruh alur kerja operasional tiket bus mulai dari pelanggan memesan tiket secara mandiri, verifikasi oleh admin, hingga proses *check-in* (scan tiket) oleh petugas lapangan.
-
----
-
-## Fitur Utama (Berdasarkan Kebutuhan Sistem)
-
-Aplikasi ini memiliki **3 Role / Hak Akses** yang saling terintegrasi:
-
-### 1. Customer (Pelanggan)
-- **Pencarian Tiket**: Mencari jadwal bus berdasarkan kota asal dan tujuan.
-- **Booking Kursi Interaktif**: Memilih kursi (Seat Layout) secara *real-time*.
-- **Upload Bukti Pembayaran**: Melakukan checkout dan mengunggah foto bukti transfer.
-- **E-Ticket & QR Code**: Mendapatkan tiket digital (*E-Ticket*) yang dilengkapi dengan **QR Code** untuk kemudahan validasi saat akan naik bus.
-
-### 2. Admin (Pengelola)
-- **Dashboard Ringkasan**: Melihat statistik harian, total pendapatan, dan tiket yang menunggu validasi.
-- **Verifikasi Pembayaran**: Menerima/Menolak bukti transfer dari pelanggan.
-- **Cetak Surat Jalan (Manifest PDF)**: Mengunduh Surat Jalan / Manifest Penumpang berformat PDF untuk diserahkan kepada Supir sebelum bus berangkat.
-- **Laporan Pemesanan**: Melihat riwayat lengkap pesanan tiket yang sudah berhasil dibayar.
-
-### 3. Checker (Petugas Terminal)
-- **Scan QR Code**: Memindai tiket pelanggan langsung menggunakan kamera *Smartphone* atau Laptop (tanpa aplikasi tambahan, *pure* berbasis web).
-- **Update Status Penumpang**: Mengubah status penumpang menjadi "Hadir" secara otomatis setelah tiket berhasil dipindai.
-- **Manifest Kehadiran**: Mengecek daftar penumpang yang sudah *boarding*.
+BusGo adalah sistem informasi berbasis web yang dirancang untuk mengelola operasional pemesanan tiket bus. Sistem ini mengintegrasikan alur reservasi oleh penumpang, verifikasi pembayaran oleh administrator, dan pencatatan manifest penumpang secara aktual di lapangan.
 
 ---
 
-## Tech Stack
-- **Framework**: Laravel 11 (Monolith)
-- **Styling**: Tailwind CSS v4 & Blade Components
-- **Database**: MySQL (via Eloquent ORM)
-- **Libraries**:
-  - `barryvdh/laravel-dompdf` (Cetak PDF Surat Jalan & E-Ticket)
-  - `html5-qrcode` (Pemindai QR Kamera di sisi Client/Checker)
-  - `simplesoftwareio/simple-qrcode` (Pembuat QR Code Tiket)
+## Arsitektur Hak Akses
+
+Sistem beroperasi menggunakan tiga tingkat hak akses utama:
+
+### 1. Customer
+- **Pencarian Jadwal**: Modul pencarian rute berbasis parameter kota asal dan tujuan.
+- **Reservasi Kursi**: Antarmuka pemilihan tata letak kursi penumpang.
+- **Transaksi**: Proses konfirmasi dan unggah bukti pembayaran.
+- **E-Ticket**: Penerbitan tiket digital yang dilengkapi identifikasi QR Code.
+
+### 2. Administrator
+- **Dasbor Operasional**: Rekapitulasi metrik penjualan, pendapatan, dan status transaksi.
+- **Validasi Transaksi**: Proses verifikasi persetujuan/penolakan pembayaran.
+- **Manajemen Jadwal**: Entri dan modifikasi jadwal serta rute keberangkatan.
+- **Penerbitan Manifest**: Pembuatan dokumen surat jalan berformat PDF untuk operasional bus.
+
+### 3. Checker
+- **Validasi Boarding**: Pemindaian QR Code tiket melalui perangkat penelusur web terintegrasi.
+- **Manajemen Manifest**: Pemantauan logis data penumpang yang telah melakukan proses *check-in* pada jadwal spesifik.
 
 ---
 
-## Panduan Instalasi (Lokal)
+## Spesifikasi Teknis
 
-Jika Anda ingin menjalankan proyek ini secara lokal, ikuti langkah-langkah berikut:
+- **Framework Backend**: Laravel 11
+- **Styling Frontend**: Tailwind CSS v4 & Blade Components
+- **Database**: MySQL (Eloquent ORM)
+- **Dependensi Tambahan**:
+  - `barryvdh/laravel-dompdf`: Generator dokumen PDF.
+  - `html5-qrcode`: Integrasi pemindai QR berbasis *client-side*.
+  - `simplesoftwareio/simple-qrcode`: Generator QR Code tiket.
 
-1. **Clone repositori ini:**
+---
+
+## Petunjuk Instalasi (Environment Lokal)
+
+1. Kloning repositori:
    ```bash
    git clone https://github.com/shadddam21/Busgo.git
    cd Busgo
    ```
 
-2. **Install Dependensi (PHP & Node):**
+2. Instal dependensi ekosistem PHP dan Node.js:
    ```bash
    composer install
    npm install
    ```
 
-3. **Konfigurasi Environment:**
-   Salin `.env.example` menjadi `.env` lalu sesuaikan konfigurasi database Anda.
+3. Konfigurasi kredensial *environment*:
    ```bash
    cp .env.example .env
    php artisan key:generate
    ```
+   *(Catatan: Sesuaikan parameter `DB_*` di dalam file `.env` dengan konfigurasi server database lokal Anda).*
 
-4. **Migrasi & Dummy Data (Penting):**
-   Jalankan perintah ini untuk membuat struktur tabel dan mengisi data awal (Jadwal, Rute, Kursi, dan Akun Default).
+4. Eksekusi skema basis data dan pengisian data uji:
    ```bash
    php artisan migrate:fresh --seed
    ```
 
-5. **Jalankan Server:**
-   Jalankan server PHP dan Vite (untuk Tailwind) di dua terminal yang berbeda.
+5. Jalankan *development server* secara paralel:
    ```bash
    php artisan serve
    ```
@@ -78,28 +74,19 @@ Jika Anda ingin menjalankan proyek ini secara lokal, ikuti langkah-langkah berik
 
 ---
 
-##  Kredensial Akun Default (Testing)
+## Kredensial Pengujian (Seeder)
 
-Gunakan akun-akun berikut untuk menguji coba masing-masing role:
+Proses migrasi telah menyertakan sekumpulan data *dummy* untuk keperluan pengujian sistem:
 
-| Role | Email | Password |
-| :--- | :--- | :--- |
-| **Admin** | `admin@busgo.com` | `password` |
-| **Checker** | `checker@busgo.com` | `password` |
-| **Customer** | `customer1@busgo.com` | `password` |
-
-*Tersedia customer1@busgo.com sampai customer5@busgo.com untuk simulasi berbagai pelanggan*
+- **Akses Administrator**: `admin@busgo.com` | `password`
+- **Akses Checker**: `checker@busgo.com` | `password`
+- **Akses Customer**: `customer1@busgo.com` s/d `customer5@busgo.com` | `password`
 
 ---
 
-##  Panduan Simulasi Alur Kerja (End-to-End)
+## Alur Fungsional Utama
 
-1. Login sebagai **Customer**, lalu coba lakukan pencarian tiket dari beranda.
-2. Pilih jadwal, lalu pilih kursi yang masih kosong (berwarna putih).
-3. Selesaikan form *checkout* dengan mengunggah foto apa saja sebagai "Bukti Transfer".
-4. Logout, lalu login sebagai **Admin**. Masuk ke menu "Pembayaran" dan klik tombol "Verifikasi" pada transaksi yang baru saja dibuat.
-5. Sebagai Admin, masuk ke menu "Surat Jalan" lalu klik "Cetak PDF" untuk melihat bentuk fisik manifest penumpang.
-6. Logout, lalu masuk ke akun **Customer** kembali. Buka menu "Pesanan Saya", lalu klik "Lihat Tiket". (E-Ticket lengkap dengan QR Code akan muncul).
-7. Di *device* lain (atau di *tab* baru), login sebagai **Checker**. Buka menu "Scan Sekarang".
-8. Arahkan kamera ke arah QR Code milik tiket Customer tadi. Data akan langsung terverifikasi secara otomatis!
+1. Login menggunakan akses **Customer** untuk menginisiasi pemesanan tiket hingga tahap pembayaran.
+2. Beralih ke sesi **Administrator** untuk melakukan tindakan validasi pada pembayaran tersebut.
+3. Gunakan sesi **Checker** pada menu *Scan* untuk menguji pemindaian QR Code dari E-Ticket yang telah tervalidasi.
 
