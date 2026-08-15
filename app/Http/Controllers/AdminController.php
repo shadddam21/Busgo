@@ -87,6 +87,20 @@ class AdminController extends Controller
         $routes = Route::with(['origin', 'destination'])->get();
         return view('admin.routes.index', compact('routes')); 
     }
-    public function reports() { return view('admin.reports.index'); }
+    public function reports(Request $request) { 
+        $startDate = $request->query('start_date', \Carbon\Carbon::now()->startOfMonth()->format('Y-m-d'));
+        $endDate = $request->query('end_date', \Carbon\Carbon::now()->endOfMonth()->format('Y-m-d'));
+
+        $orders = Order::with(['schedule.route.origin', 'schedule.route.destination', 'user', 'seat'])
+            ->whereIn('status', ['confirmed', 'departed'])
+            ->whereBetween('created_at', [$startDate . ' 00:00:00', $endDate . ' 23:59:59'])
+            ->orderBy('created_at', 'desc')
+            ->get();
+
+        $totalRevenue = $orders->sum('total_price');
+        $totalTickets = $orders->count();
+
+        return view('admin.reports.index', compact('orders', 'startDate', 'endDate', 'totalRevenue', 'totalTickets')); 
+    }
     public function users() { return view('admin.users.index'); }
 }

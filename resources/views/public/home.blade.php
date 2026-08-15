@@ -11,68 +11,15 @@
                     Temukan berbagai rute, pilihan kursi terbaik, dan perjalanan nyaman untuk Anda.
                 </p>
 
-                <!-- Search Form Card -->
-                <div class="bg-white p-6 rounded-2xl shadow-xl border border-slate-100 relative">
-                    <!-- Tabs -->
-                    <div class="flex gap-4 mb-6 border-b border-slate-100 pb-2">
-                        <button class="text-primary font-semibold border-b-2 border-primary px-2 py-1 text-sm">Sekali Jalan</button>
-                        <button class="text-slate-400 font-medium px-2 py-1 text-sm hover:text-slate-600">Pulang Pergi</button>
-                    </div>
-
-                    <form action="/search" method="GET" class="grid grid-cols-1 sm:grid-cols-2 gap-4">
-                        <!-- Dari -->
-                        <div class="flex flex-col">
-                            <label class="text-xs text-slate-500 font-semibold mb-1">Dari</label>
-                            <select name="origin" class="form-select border-0 border-b border-slate-200 focus:ring-0 focus:border-primary p-0 text-lg font-medium text-slate-800 pb-1">
-                                <option value="1">Jakarta</option>
-                                <option value="2">Bandung</option>
-                                <option value="3">Surabaya</option>
-                                <option value="4">Yogyakarta</option>
-                            </select>
-                            <div class="text-xs text-slate-400 mt-1">Pilih kota asal</div>
-                        </div>
-
-                        <!-- Switch Icon -->
-                        <div class="absolute left-1/2 top-[55%] -translate-x-1/2 -translate-y-1/2 bg-white rounded-full p-2 shadow border border-slate-100 hidden sm:block z-10">
-                            <svg class="w-5 h-5 text-primary" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7h12m0 0l-4-4m4 4l-4 4m0 6H4m0 0l4 4m-4-4l4-4"/></svg>
-                        </div>
-
-                        <!-- Ke -->
-                        <div class="flex flex-col">
-                            <label class="text-xs text-slate-500 font-semibold mb-1">Ke</label>
-                            <select name="destination" class="form-select border-0 border-b border-slate-200 focus:ring-0 focus:border-primary p-0 text-lg font-medium text-slate-800 pb-1">
-                                <option value="3" selected>Surabaya</option>
-                                <option value="1">Jakarta</option>
-                                <option value="2">Bandung</option>
-                                <option value="4">Yogyakarta</option>
-                            </select>
-                            <div class="text-xs text-slate-400 mt-1">Pilih kota tujuan</div>
-                        </div>
-
-                        <!-- Tanggal Berangkat -->
-                        <div class="flex flex-col mt-4">
-                            <label class="text-xs text-slate-500 font-semibold mb-1">Tanggal Berangkat</label>
-                            <input type="date" name="date" class="form-input border-0 border-b border-slate-200 focus:ring-0 focus:border-primary p-0 text-lg font-medium text-slate-800 pb-1" value="{{ date('Y-m-d') }}">
-                            <div class="text-xs text-slate-400 mt-1">{{ \Carbon\Carbon::now()->translatedFormat('l') }}</div>
-                        </div>
-
-                        <!-- Penumpang & Cari -->
-                        <div class="flex flex-col sm:flex-row gap-4 mt-4 items-end">
-                            <div class="flex flex-col w-full">
-                                <label class="text-xs text-slate-500 font-semibold mb-1">Penumpang</label>
-                                <select name="passengers" class="form-select border-0 border-b border-slate-200 focus:ring-0 focus:border-primary p-0 text-lg font-medium text-slate-800 pb-1">
-                                    <option value="1">1 Penumpang</option>
-                                    <option value="2">2 Penumpang</option>
-                                    <option value="3">3 Penumpang</option>
-                                    <option value="4">4 Penumpang</option>
-                                </select>
-                            </div>
-                            <button type="submit" class="w-full bg-primary hover:bg-primary-light text-white font-semibold py-3 px-6 rounded-lg transition shadow-md flex items-center justify-center gap-2">
-                                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"/></svg>
-                                Cari Tiket
-                            </button>
-                        </div>
-                    </form>
+                <!-- Call to action -->
+                <div class="bg-blue-50/50 p-6 sm:p-8 rounded-3xl border border-blue-100/50 relative backdrop-blur-sm">
+                    <p class="text-slate-700 leading-relaxed mb-6 font-medium text-lg">
+                        BusGo adalah platform pemesanan tiket bus modern yang didesain untuk kenyamanan perjalanan Anda. Nikmati kemudahan memesan tiket kapan saja dan di mana saja. Dengan armada eksekutif, supir profesional, dan pelayanan prima, BusGo siap mengantar Anda ke kota tujuan dengan aman.
+                    </p>
+                    <a href="/search" class="inline-flex w-full sm:w-auto bg-primary hover:bg-primary-light text-white font-semibold py-4 px-8 rounded-xl transition shadow-lg shadow-primary/30 items-center justify-center gap-2 text-lg">
+                        <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"/></svg>
+                        Cari Tiket Sekarang
+                    </a>
                 </div>
             </div>
 

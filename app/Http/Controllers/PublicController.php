@@ -32,4 +32,9 @@ class PublicController extends Controller
 
         return view('public.search', compact('schedules', 'origin', 'destination', 'date', 'passengers', 'cities'));
     }
+
+    public function bantuan()
+    {
+        return view('public.bantuan');
+    }
 }

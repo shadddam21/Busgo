@@ -30,11 +30,11 @@
                 <div class="space-y-4">
                     <div>
                         <label for="email" class="block text-sm font-medium text-slate-700 mb-1">Email Address</label>
-                        <input id="email" name="email" type="email" autocomplete="email" required class="appearance-none rounded-xl relative block w-full px-4 py-3 border border-slate-200 placeholder-slate-400 text-slate-900 focus:outline-none focus:ring-primary focus:border-primary focus:z-10 sm:text-sm bg-slate-50 focus:bg-white transition" placeholder="john@example.com" value="{{ old('email') }}">
+                        <input id="email" name="email" type="email" autocomplete="email" required class="appearance-none rounded-xl relative block w-full px-4 py-3 border border-slate-200 placeholder-slate-400 text-black focus:outline-none focus:ring-primary focus:border-primary focus:z-10 sm:text-sm bg-slate-50 focus:bg-white transition" placeholder="john@example.com" value="{{ old('email') }}">
                     </div>
                     <div>
                         <label for="password" class="block text-sm font-medium text-slate-700 mb-1">Password</label>
-                        <input id="password" name="password" type="password" autocomplete="current-password" required class="appearance-none rounded-xl relative block w-full px-4 py-3 border border-slate-200 placeholder-slate-400 text-slate-900 focus:outline-none focus:ring-primary focus:border-primary focus:z-10 sm:text-sm bg-slate-50 focus:bg-white transition" placeholder="••••••••">
+                        <input id="password" name="password" type="password" autocomplete="current-password" required class="appearance-none rounded-xl relative block w-full px-4 py-3 border border-slate-200 placeholder-slate-400 text-black focus:outline-none focus:ring-primary focus:border-primary focus:z-10 sm:text-sm bg-slate-50 focus:bg-white transition" placeholder="••••••••">
                     </div>
                 </div>
 

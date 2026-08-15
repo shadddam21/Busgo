@@ -46,44 +46,7 @@
     </div>
 
     <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 flex flex-col md:flex-row gap-8">
-        <!-- Sidebar Filter -->
-        <div class="w-full md:w-64 flex-shrink-0">
-            <div class="bg-white border border-slate-200 rounded-xl p-4 sticky top-24">
-                <h3 class="font-bold text-slate-800 mb-4">Filter</h3>
-                
-                <div class="mb-6">
-                    <h4 class="text-sm font-semibold text-slate-700 mb-2">Waktu Berangkat</h4>
-                    <div class="space-y-2">
-                        <label class="flex items-center gap-2 text-sm text-slate-600">
-                            <input type="checkbox" class="text-primary focus:ring-primary border-slate-300 rounded">
-                            Pagi (06:00 - 12:00)
-                        </label>
-                        <label class="flex items-center gap-2 text-sm text-slate-600">
-                            <input type="checkbox" class="text-primary focus:ring-primary border-slate-300 rounded">
-                            Siang (12:00 - 18:00)
-                        </label>
-                        <label class="flex items-center gap-2 text-sm text-slate-600">
-                            <input type="checkbox" class="text-primary focus:ring-primary border-slate-300 rounded">
-                            Malam (18:00 - 06:00)
-                        </label>
-                    </div>
-                </div>
-
-                <div>
-                    <h4 class="text-sm font-semibold text-slate-700 mb-2">Kelas Bus</h4>
-                    <div class="space-y-2">
-                        <label class="flex items-center gap-2 text-sm text-slate-600">
-                            <input type="checkbox" class="text-primary focus:ring-primary border-slate-300 rounded">
-                            Executive
-                        </label>
-                        <label class="flex items-center gap-2 text-sm text-slate-600">
-                            <input type="checkbox" class="text-primary focus:ring-primary border-slate-300 rounded">
-                            VIP
-                        </label>
-                    </div>
-                </div>
-            </div>
-        </div>
+        <!-- Sidebar Filter (Removed per request) -->
 
         <!-- Result List -->
         <div class="flex-1">

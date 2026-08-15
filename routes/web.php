@@ -9,6 +9,7 @@ use App\Http\Controllers\BookingController;
 // Public
 Route::get('/', [PublicController::class, 'home']);
 Route::get('/search', [PublicController::class, 'search']);
+Route::get('/bantuan', [PublicController::class, 'bantuan']);
 
 // Auth
 Route::get('/login', [AuthController::class, 'showLogin'])->name('login');

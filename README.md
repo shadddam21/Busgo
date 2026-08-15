@@ -1,58 +1,107 @@
-<p align="center"><a href="https://laravel.com" target="_blank"><img src="https://raw.githubusercontent.com/laravel/art/master/logo-lockup/5%20SVG/2%20CMYK/1%20Full%20Color/laravel-logolockup-cmyk-red.svg" width="400" alt="Laravel Logo"></a></p>
+# 🚌 BusGo - Sistem Pemesanan Tiket Bus Modern
 
-<p align="center">
-<a href="https://github.com/laravel/framework/actions"><img src="https://github.com/laravel/framework/workflows/tests/badge.svg" alt="Build Status"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/dt/laravel/framework" alt="Total Downloads"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/v/laravel/framework" alt="Latest Stable Version"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/l/laravel/framework" alt="License"></a>
-</p>
+BusGo adalah platform pemesanan tiket bus berbasis web yang dikembangkan khusus untuk memudahkan proses reservasi kursi, pembayaran, dan manajemen manifest penumpang. Sistem ini dirancang untuk menangani seluruh alur kerja operasional tiket bus mulai dari pelanggan memesan tiket secara mandiri, verifikasi oleh admin, hingga proses *check-in* (scan tiket) oleh petugas lapangan.
 
-## About Laravel
+---
 
-Laravel is a web application framework with expressive, elegant syntax. We believe development must be an enjoyable and creative experience to be truly fulfilling. Laravel takes the pain out of development by easing common tasks used in many web projects, such as:
+## 🎯 Fitur Utama (Berdasarkan Kebutuhan Sistem)
 
-- [Simple, fast routing engine](https://laravel.com/docs/routing).
-- [Powerful dependency injection container](https://laravel.com/docs/container).
-- Multiple back-ends for [session](https://laravel.com/docs/session) and [cache](https://laravel.com/docs/cache) storage.
-- Expressive, intuitive [database ORM](https://laravel.com/docs/eloquent).
-- Database agnostic [schema migrations](https://laravel.com/docs/migrations).
-- [Robust background job processing](https://laravel.com/docs/queues).
-- [Real-time event broadcasting](https://laravel.com/docs/broadcasting).
+Aplikasi ini memiliki **3 Role / Hak Akses** yang saling terintegrasi:
 
-Laravel is accessible, powerful, and provides tools required for large, robust applications.
+### 1. 👤 Customer (Pelanggan)
+- **Pencarian Tiket**: Mencari jadwal bus berdasarkan kota asal dan tujuan.
+- **Booking Kursi Interaktif**: Memilih kursi (Seat Layout) secara *real-time*.
+- **Upload Bukti Pembayaran**: Melakukan checkout dan mengunggah foto bukti transfer.
+- **E-Ticket & QR Code**: Mendapatkan tiket digital (*E-Ticket*) yang dilengkapi dengan **QR Code** untuk kemudahan validasi saat akan naik bus.
 
-## Learning Laravel
+### 2. 🛡️ Admin (Pengelola)
+- **Dashboard Ringkasan**: Melihat statistik harian, total pendapatan, dan tiket yang menunggu validasi.
+- **Verifikasi Pembayaran**: Menerima/Menolak bukti transfer dari pelanggan.
+- **Cetak Surat Jalan (Manifest PDF)**: Mengunduh Surat Jalan / Manifest Penumpang berformat PDF untuk diserahkan kepada Supir sebelum bus berangkat.
+- **Laporan Pemesanan**: Melihat riwayat lengkap pesanan tiket yang sudah berhasil dibayar.
 
-Laravel has the most extensive and thorough [documentation](https://laravel.com/docs) and video tutorial library of all modern web application frameworks, making it a breeze to get started with the framework.
+### 3. 🎫 Checker (Petugas Terminal)
+- **Scan QR Code**: Memindai tiket pelanggan langsung menggunakan kamera *Smartphone* atau Laptop (tanpa aplikasi tambahan, *pure* berbasis web).
+- **Update Status Penumpang**: Mengubah status penumpang menjadi "Hadir" secara otomatis setelah tiket berhasil dipindai.
+- **Manifest Kehadiran**: Mengecek daftar penumpang yang sudah *boarding*.
 
-In addition, [Laracasts](https://laracasts.com) contains thousands of video tutorials on a range of topics including Laravel, modern PHP, unit testing, and JavaScript. Boost your skills by digging into our comprehensive video library.
+---
 
-You can also watch bite-sized lessons with real-world projects on [Laravel Learn](https://laravel.com/learn), where you will be guided through building a Laravel application from scratch while learning PHP fundamentals.
+## 💻 Tech Stack
+- **Framework**: Laravel 11 (Monolith)
+- **Styling**: Tailwind CSS v4 & Blade Components
+- **Database**: MySQL (via Eloquent ORM)
+- **Libraries**:
+  - `barryvdh/laravel-dompdf` (Cetak PDF Surat Jalan & E-Ticket)
+  - `html5-qrcode` (Pemindai QR Kamera di sisi Client/Checker)
+  - `simplesoftwareio/simple-qrcode` (Pembuat QR Code Tiket)
 
-## Agentic Development
+---
 
-Laravel's predictable structure and conventions make it ideal for AI coding agents like Claude Code, Cursor, and GitHub Copilot. Install [Laravel Boost](https://laravel.com/docs/ai) to supercharge your AI workflow:
+## 🚀 Panduan Instalasi (Lokal)
 
-```bash
-composer require laravel/boost --dev
+Jika Anda ingin menjalankan proyek ini secara lokal, ikuti langkah-langkah berikut:
 
-php artisan boost:install
-```
+1. **Clone repositori ini:**
+   ```bash
+   git clone https://github.com/shadddam21/Busgo.git
+   cd Busgo
+   ```
 
-Boost provides your agent 15+ tools and skills that help agents build Laravel applications while following best practices.
+2. **Install Dependensi (PHP & Node):**
+   ```bash
+   composer install
+   npm install
+   ```
 
-## Contributing
+3. **Konfigurasi Environment:**
+   Salin `.env.example` menjadi `.env` lalu sesuaikan konfigurasi database Anda.
+   ```bash
+   cp .env.example .env
+   php artisan key:generate
+   ```
 
-Thank you for considering contributing to the Laravel framework! The contribution guide can be found in the [Laravel documentation](https://laravel.com/docs/contributions).
+4. **Migrasi & Dummy Data (Penting):**
+   Jalankan perintah ini untuk membuat struktur tabel dan mengisi data awal (Jadwal, Rute, Kursi, dan Akun Default).
+   ```bash
+   php artisan migrate:fresh --seed
+   ```
 
-## Code of Conduct
+5. **Jalankan Server:**
+   Jalankan server PHP dan Vite (untuk Tailwind) di dua terminal yang berbeda.
+   ```bash
+   php artisan serve
+   ```
+   ```bash
+   npm run dev
+   ```
 
-In order to ensure that the Laravel community is welcoming to all, please review and abide by the [Code of Conduct](https://laravel.com/docs/contributions#code-of-conduct).
+---
 
-## Security Vulnerabilities
+## 🔐 Kredensial Akun Default (Testing)
 
-If you discover a security vulnerability within Laravel, please send an e-mail to Taylor Otwell via [taylor@laravel.com](mailto:taylor@laravel.com). All security vulnerabilities will be promptly addressed.
+Gunakan akun-akun berikut untuk menguji coba masing-masing role:
 
-## License
+| Role | Email | Password |
+| :--- | :--- | :--- |
+| **Admin** | `admin@busgo.com` | `password` |
+| **Checker** | `checker@busgo.com` | `password` |
+| **Customer** | `customer1@busgo.com` | `password` |
 
-The Laravel framework is open-sourced software licensed under the [MIT license](https://opensource.org/licenses/MIT).
+*(Tersedia customer1@busgo.com hingga customer5@busgo.com untuk simulasi berbagai pelanggan)*
+
+---
+
+## 📸 Panduan Simulasi Alur Kerja (End-to-End)
+
+1. Login sebagai **Customer**, lalu coba lakukan pencarian tiket dari beranda.
+2. Pilih jadwal, lalu pilih kursi yang masih kosong (berwarna putih).
+3. Selesaikan form *checkout* dengan mengunggah foto apa saja sebagai "Bukti Transfer".
+4. Logout, lalu login sebagai **Admin**. Masuk ke menu "Pembayaran" dan klik tombol "Verifikasi" pada transaksi yang baru saja dibuat.
+5. Sebagai Admin, masuk ke menu "Surat Jalan" lalu klik "Cetak PDF" untuk melihat bentuk fisik manifest penumpang.
+6. Logout, lalu masuk ke akun **Customer** kembali. Buka menu "Pesanan Saya", lalu klik "Lihat Tiket". (E-Ticket lengkap dengan QR Code akan muncul).
+7. Di *device* lain (atau di *tab* baru), login sebagai **Checker**. Buka menu "Scan Sekarang".
+8. Arahkan kamera ke arah QR Code milik tiket Customer tadi. Data akan langsung terverifikasi secara otomatis!
+
+---
+*Dibuat untuk keperluan Wawancara / Technical Test Role Software Engineer.*

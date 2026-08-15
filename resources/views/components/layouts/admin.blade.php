@@ -30,13 +30,10 @@
 
                 <div class="space-y-1">
                     <x-ui.admin-nav-link href="/admin/dashboard" :active="request()->is('admin/dashboard')" icon="home">Dashboard</x-ui.admin-nav-link>
-                    <x-ui.admin-nav-link href="/admin/schedules" :active="request()->is('admin/schedules*')" icon="calendar">Jadwal & Rute</x-ui.admin-nav-link>
                     <x-ui.admin-nav-link href="/admin/orders" :active="request()->is('admin/orders*')" icon="ticket">Pemesanan</x-ui.admin-nav-link>
                     <x-ui.admin-nav-link href="/admin/payments" :active="request()->is('admin/payments*')" icon="credit-card" :badge="$pendingPayments ?? 0">Pembayaran</x-ui.admin-nav-link>
                     <x-ui.admin-nav-link href="/admin/driver-letters" :active="request()->is('admin/driver-letters*')" icon="document">Surat Jalan</x-ui.admin-nav-link>
-                    <x-ui.admin-nav-link href="/admin/cities" :active="request()->is('admin/cities*') || request()->is('admin/routes*')" icon="database">Master Data</x-ui.admin-nav-link>
                     <x-ui.admin-nav-link href="/admin/reports" :active="request()->is('admin/reports*')" icon="chart-bar">Laporan</x-ui.admin-nav-link>
-                    <x-ui.admin-nav-link href="/admin/users" :active="request()->is('admin/users*')" icon="users">Pengguna</x-ui.admin-nav-link>
                 </div>
             </div>
         </div>

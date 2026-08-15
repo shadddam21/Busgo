@@ -28,32 +28,32 @@
                 <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
                     <div class="col-span-2">
                         <label class="block text-sm font-medium text-slate-700 mb-1">Nama Lengkap (Sesuai KTP)</label>
-                        <input name="name" type="text" required class="form-input rounded-xl w-full px-4 py-3 border-slate-200 text-slate-900 focus:border-primary focus:ring-primary bg-slate-50 focus:bg-white transition" value="{{ old('name') }}">
+                        <input name="name" type="text" required class="rounded-xl w-full px-4 py-3 border border-slate-200 text-black focus:border-primary focus:ring-primary bg-slate-50 focus:bg-white transition" value="{{ old('name') }}">
                     </div>
 
                     <div>
                         <label class="block text-sm font-medium text-slate-700 mb-1">Email</label>
-                        <input name="email" type="email" required class="form-input rounded-xl w-full px-4 py-3 border-slate-200 text-slate-900 focus:border-primary focus:ring-primary bg-slate-50 focus:bg-white transition" value="{{ old('email') }}">
+                        <input name="email" type="email" required class="rounded-xl w-full px-4 py-3 border border-slate-200 text-black focus:border-primary focus:ring-primary bg-slate-50 focus:bg-white transition" value="{{ old('email') }}">
                     </div>
 
                     <div>
                         <label class="block text-sm font-medium text-slate-700 mb-1">Nomor HP / WhatsApp</label>
-                        <input name="phone" type="text" required class="form-input rounded-xl w-full px-4 py-3 border-slate-200 text-slate-900 focus:border-primary focus:ring-primary bg-slate-50 focus:bg-white transition" value="{{ old('phone') }}">
+                        <input name="phone" type="text" required class="rounded-xl w-full px-4 py-3 border border-slate-200 text-black focus:border-primary focus:ring-primary bg-slate-50 focus:bg-white transition" value="{{ old('phone') }}">
                     </div>
                     
                     <div class="col-span-2">
                         <label class="block text-sm font-medium text-slate-700 mb-1">NIK KTP (16 Digit)</label>
-                        <input name="nik" type="text" required class="form-input rounded-xl w-full px-4 py-3 border-slate-200 text-slate-900 focus:border-primary focus:ring-primary bg-slate-50 focus:bg-white transition" value="{{ old('nik') }}">
+                        <input name="nik" type="text" required class="rounded-xl w-full px-4 py-3 border border-slate-200 text-black focus:border-primary focus:ring-primary bg-slate-50 focus:bg-white transition" value="{{ old('nik') }}">
                     </div>
 
                     <div>
                         <label class="block text-sm font-medium text-slate-700 mb-1">Password</label>
-                        <input name="password" type="password" required class="form-input rounded-xl w-full px-4 py-3 border-slate-200 text-slate-900 focus:border-primary focus:ring-primary bg-slate-50 focus:bg-white transition">
+                        <input name="password" type="password" required class="rounded-xl w-full px-4 py-3 border border-slate-200 text-black focus:border-primary focus:ring-primary bg-slate-50 focus:bg-white transition">
                     </div>
 
                     <div>
                         <label class="block text-sm font-medium text-slate-700 mb-1">Konfirmasi Password</label>
-                        <input name="password_confirmation" type="password" required class="form-input rounded-xl w-full px-4 py-3 border-slate-200 text-slate-900 focus:border-primary focus:ring-primary bg-slate-50 focus:bg-white transition">
+                        <input name="password_confirmation" type="password" required class="rounded-xl w-full px-4 py-3 border border-slate-200 text-black focus:border-primary focus:ring-primary bg-slate-50 focus:bg-white transition">
                     </div>
                 </div>
 

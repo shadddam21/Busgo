@@ -24,15 +24,25 @@
                 </div>
                 
                 <div class="hidden md:flex items-center space-x-8">
-                    <a href="/" class="text-sm font-semibold text-primary">Beranda</a>
-                    <a href="/search" class="text-sm text-slate-500 hover:text-primary transition">Cari Tiket</a>
-                    <a href="/customer/orders" class="text-sm text-slate-500 hover:text-primary transition">Pesanan Saya</a>
-                    <a href="#" class="text-sm text-slate-500 hover:text-primary transition">Bantuan</a>
+                    <a href="/" class="text-sm font-semibold text-slate-500 hover:text-primary transition {{ request()->is('/') ? 'text-primary' : '' }}">Beranda</a>
+                    <a href="/search" class="text-sm text-slate-500 hover:text-primary transition {{ request()->is('search') ? 'text-primary' : '' }}">Cari Tiket</a>
+                    <a href="/bantuan" class="text-sm text-slate-500 hover:text-primary transition {{ request()->is('bantuan') ? 'text-primary' : '' }}">Bantuan</a>
+                    @auth
+                        @if(auth()->user()->role == 'customer')
+                            <a href="/customer/orders" class="text-sm text-slate-500 hover:text-primary transition {{ request()->is('customer/orders*') ? 'text-primary' : '' }}">Pesanan Saya</a>
+                        @endif
+                    @endauth
                 </div>
 
                 <div class="flex items-center gap-3">
                     @auth
-                        <a href="/customer/dashboard" class="px-4 py-2 text-sm font-semibold text-primary border border-primary rounded-lg hover:bg-primary-50 transition">Dashboard</a>
+                        @if(auth()->user()->role == 'admin')
+                            <a href="/admin/dashboard" class="px-4 py-2 text-sm font-semibold text-primary border border-primary rounded-lg hover:bg-primary-50 transition">Dashboard</a>
+                        @elseif(auth()->user()->role == 'checker')
+                            <a href="/checker/dashboard" class="px-4 py-2 text-sm font-semibold text-primary border border-primary rounded-lg hover:bg-primary-50 transition">Dashboard</a>
+                        @else
+                            <a href="/customer/dashboard" class="px-4 py-2 text-sm font-semibold text-primary border border-primary rounded-lg hover:bg-primary-50 transition">Dashboard</a>
+                        @endif
                     @else
                         <a href="/login" class="px-4 py-2 text-sm font-semibold text-primary border border-primary rounded-lg hover:bg-primary-50 transition">Masuk</a>
                         <a href="/register" class="px-4 py-2 text-sm font-semibold text-white bg-primary rounded-lg hover:bg-primary-light transition shadow-sm">Daftar</a>
