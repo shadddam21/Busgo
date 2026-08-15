@@ -31,9 +31,22 @@ class CheckerController extends Controller
     public function processScan(Request $request)
     {
         $token = $request->input('qr_token');
-        $order = Order::with(['user', 'schedule.route.origin', 'schedule.route.destination', 'seat'])
-            ->where('qr_token', $token)
-            ->first();
+        $orderCode = $request->input('order_code');
+        
+        $query = Order::with(['user', 'schedule.route.origin', 'schedule.route.destination', 'seat']);
+        
+        if ($token) {
+            $query->where('qr_token', $token);
+        } else if ($orderCode) {
+            $query->where('order_code', $orderCode);
+        } else {
+            return response()->json([
+                'success' => false,
+                'message' => 'Parameter tidak valid.'
+            ]);
+        }
+        
+        $order = $query->first();
 
         if (!$order) {
             return response()->json([

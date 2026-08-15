@@ -19,6 +19,17 @@
         </div>
     </div>
 
+    <!-- Manual Input Form -->
+    <div class="bg-[#1C1C1E] rounded-3xl p-5 shadow-xl border border-white/5 mb-6">
+        <h3 class="text-white font-semibold mb-3">Input Manual (Jika Scanner Gagal)</h3>
+        <div class="flex gap-2">
+            <input type="text" id="manualBookingId" placeholder="Masukkan Kode Booking (Cth: ORD-ABC123)" class="flex-1 bg-black/50 border border-white/10 rounded-xl px-4 py-3 text-white focus:outline-none focus:border-primary placeholder-white/30 uppercase">
+            <button onclick="processManual()" class="bg-primary hover:bg-primary-light text-white px-6 py-3 rounded-xl font-semibold transition">
+                Cek
+            </button>
+        </div>
+    </div>
+
     <!-- Status Message -->
     <div id="scanResult" class="hidden rounded-2xl p-4 mb-24 transition-all">
         <div class="flex items-center gap-3 mb-2">
@@ -81,6 +92,38 @@
 
         function onScanFailure(error) {
             // handle scan failure, usually better to ignore and keep scanning
+        }
+
+        function processManual() {
+            const input = document.getElementById('manualBookingId');
+            const bookingId = input.value.trim().toUpperCase();
+            if (!bookingId) {
+                alert('Silakan masukkan Kode Booking');
+                return;
+            }
+            
+            if (!isScanning) return;
+            isScanning = false;
+            if (html5QrcodeScanner) html5QrcodeScanner.pause();
+
+            // Kirim ke backend menggunakan order_code
+            fetch('/checker/scan/process', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'X-CSRF-TOKEN': '{{ csrf_token() }}'
+                },
+                body: JSON.stringify({ order_code: bookingId })
+            })
+            .then(response => response.json())
+            .then(data => {
+                showResult(data);
+                input.value = '';
+            })
+            .catch(error => {
+                console.error('Error:', error);
+                showResult({ success: false, message: 'Terjadi kesalahan jaringan.' });
+            });
         }
 
         function showResult(data) {

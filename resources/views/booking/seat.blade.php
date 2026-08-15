@@ -58,7 +58,7 @@
                                         @endphp
                                         <div class="relative">
                                             @if($seat)
-                                                <input type="radio" name="seat_id" value="{{ $seat->id }}" id="seat_{{ $seat->id }}" class="peer hidden" {{ $seat->status != 'available' ? 'disabled' : '' }} onchange="updateSummary('{{ $seat->seat_number }}', {{ $schedule->price }})">
+                                                <input type="radio" name="seat_id" value="{{ $seat->id }}" id="seat_{{ $seat->id }}" class="peer sr-only" {{ $seat->status != 'available' ? 'disabled' : '' }} onchange="updateSummary('{{ $seat->seat_number }}', {{ $schedule->price }})">
                                                 <label for="seat_{{ $seat->id }}" class="w-12 h-12 flex items-center justify-center rounded-lg text-sm font-bold cursor-pointer transition-all border-2 
                                                     {{ $seat->status == 'available' ? 'bg-white border-primary text-primary hover:bg-primary-50 peer-checked:bg-primary peer-checked:text-white' : 'bg-slate-300 border-slate-300 text-white cursor-not-allowed' }}">
                                                     {{ $seatName }}
@@ -79,7 +79,7 @@
                                         @endphp
                                         <div class="relative">
                                             @if($seat)
-                                                <input type="radio" name="seat_id" value="{{ $seat->id }}" id="seat_{{ $seat->id }}" class="peer hidden" {{ $seat->status != 'available' ? 'disabled' : '' }} onchange="updateSummary('{{ $seat->seat_number }}', {{ $schedule->price }})">
+                                                <input type="radio" name="seat_id" value="{{ $seat->id }}" id="seat_{{ $seat->id }}" class="peer sr-only" {{ $seat->status != 'available' ? 'disabled' : '' }} onchange="updateSummary('{{ $seat->seat_number }}', {{ $schedule->price }})">
                                                 <label for="seat_{{ $seat->id }}" class="w-12 h-12 flex items-center justify-center rounded-lg text-sm font-bold cursor-pointer transition-all border-2 
                                                     {{ $seat->status == 'available' ? 'bg-white border-primary text-primary hover:bg-primary-50 peer-checked:bg-primary peer-checked:text-white' : 'bg-slate-300 border-slate-300 text-white cursor-not-allowed' }}">
                                                     {{ $seatName }}

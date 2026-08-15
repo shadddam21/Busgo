@@ -1,8 +1,19 @@
 <x-layouts.admin title="Manajemen Pemesanan - BusGo">
-    <div class="mb-6">
-        <h2 class="text-2xl font-bold text-slate-800">Daftar Pemesanan</h2>
-        <p class="text-slate-600">Kelola semua transaksi tiket dari pengguna.</p>
+    <div class="mb-6 flex justify-between items-center">
+        <div>
+            <h2 class="text-2xl font-bold text-slate-800">Daftar Pemesanan</h2>
+            <p class="text-slate-600">Kelola semua transaksi tiket dari pengguna.</p>
+        </div>
+        <a href="/admin/orders/create" class="bg-primary hover:bg-primary-light text-white font-semibold py-2 px-4 rounded-xl shadow-sm transition">
+            + Buat Pesanan Manual
+        </a>
     </div>
+
+    @if(session('success'))
+        <div class="bg-green-50 text-green-700 p-4 rounded-xl mb-6 font-medium border border-green-100">
+            {{ session('success') }}
+        </div>
+    @endif
 
     <div class="bg-white border border-slate-200 rounded-2xl shadow-sm overflow-hidden">
         <div class="overflow-x-auto">

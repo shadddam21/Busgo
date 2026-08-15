@@ -60,9 +60,152 @@ class AdminController extends Controller
         $schedules = Schedule::with(['route.origin', 'route.destination'])->orderBy('departure_date', 'desc')->get();
         return view('admin.schedules.index', compact('schedules')); 
     }
-    public function orders() { 
-        $orders = Order::with(['user', 'schedule.route.origin', 'schedule.route.destination', 'seat'])->orderBy('created_at', 'desc')->get();
-        return view('admin.orders.index', compact('orders')); 
+
+    public function createSchedule()
+    {
+        $routes = \App\Models\Route::with(['origin', 'destination'])->get();
+        return view('admin.schedules.create', compact('routes'));
+    }
+
+    public function storeSchedule(Request $request)
+    {
+        $request->validate([
+            'route_id' => 'required|exists:routes,id',
+            'departure_date' => 'required|date',
+            'departure_time' => 'required|date_format:H:i',
+            'arrival_time' => 'required|date_format:H:i',
+            'price' => 'required|numeric|min:0',
+        ]);
+
+        $schedule = Schedule::create([
+            'route_id' => $request->route_id,
+            'departure_date' => $request->departure_date,
+            'departure_time' => $request->departure_time . ':00',
+            'arrival_time' => $request->arrival_time . ':00',
+            'price' => $request->price,
+            'total_seats' => 40
+        ]);
+
+        // Generate Seats (A1-A10, B1-B10, C1-C10, D1-D10)
+        $rows = ['A', 'B', 'C', 'D'];
+        foreach ($rows as $row) {
+            for ($num = 1; $num <= 10; $num++) {
+                \App\Models\Seat::create([
+                    'schedule_id' => $schedule->id,
+                    'seat_number' => $row . $num,
+                    'status' => 'available'
+                ]);
+            }
+        }
+
+        return redirect('/admin/schedules')->with('success', 'Jadwal dan 40 kursi berhasil ditambahkan.');
+    }
+
+    public function editSchedule(Schedule $schedule)
+    {
+        $routes = \App\Models\Route::with(['origin', 'destination'])->get();
+        return view('admin.schedules.edit', compact('schedule', 'routes'));
+    }
+
+    public function updateSchedule(Request $request, Schedule $schedule)
+    {
+        $request->validate([
+            'route_id' => 'required|exists:routes,id',
+            'departure_date' => 'required|date',
+            'departure_time' => 'required|date_format:H:i',
+            'arrival_time' => 'required|date_format:H:i',
+            'price' => 'required|numeric|min:0',
+        ]);
+
+        $schedule->update([
+            'route_id' => $request->route_id,
+            'departure_date' => $request->departure_date,
+            'departure_time' => strlen($request->departure_time) == 5 ? $request->departure_time . ':00' : $request->departure_time,
+            'arrival_time' => strlen($request->arrival_time) == 5 ? $request->arrival_time . ':00' : $request->arrival_time,
+            'price' => $request->price,
+        ]);
+
+        return redirect('/admin/schedules')->with('success', 'Jadwal berhasil diperbarui.');
+    }
+
+    public function deleteSchedule(Schedule $schedule)
+    {
+        // Delete seats related to this schedule first (or rely on cascading foreign keys, but safe to delete manually if needed)
+        \App\Models\Seat::where('schedule_id', $schedule->id)->delete();
+        $schedule->delete();
+
+        return redirect('/admin/schedules')->with('success', 'Jadwal berhasil dihapus.');
+    }
+
+    public function orders()
+    {
+        $orders = Order::with(['user', 'schedule.route.origin', 'schedule.route.destination', 'seat'])
+            ->orderBy('created_at', 'desc')
+            ->get();
+        return view('admin.orders.index', compact('orders'));
+    }
+
+    public function createOrder()
+    {
+        $schedules = Schedule::with(['route.origin', 'route.destination'])
+            ->whereDate('departure_date', '>=', date('Y-m-d'))
+            ->orderBy('departure_date', 'asc')
+            ->get();
+            
+        return view('admin.orders.create', compact('schedules'));
+    }
+
+    public function storeOrder(Request $request)
+    {
+        $request->validate([
+            'customer_name' => 'required|string',
+            'customer_email' => 'required|email',
+            'customer_phone' => 'required|string',
+            'schedule_id' => 'required|exists:schedules,id',
+        ]);
+        
+        $user = \App\Models\User::firstOrCreate(
+            ['email' => $request->customer_email],
+            [
+                'name' => $request->customer_name,
+                'password' => \Illuminate\Support\Facades\Hash::make('password'),
+                'role' => 'customer',
+                'phone' => $request->customer_phone,
+                'nik' => '0000000000000000'
+            ]
+        );
+
+        $schedule = Schedule::findOrFail($request->schedule_id);
+        $seat = $schedule->seats()->where('status', 'available')->orderBy('seat_number')->first();
+
+        if (!$seat) {
+            return back()->withErrors(['schedule_id' => 'Jadwal ini sudah penuh (tidak ada kursi tersedia).']);
+        }
+
+        $order = Order::create([
+            'order_code' => 'ORD-' . strtoupper(\Illuminate\Support\Str::random(8)),
+            'user_id' => $user->id,
+            'schedule_id' => $schedule->id,
+            'seat_id' => $seat->id,
+            'total_price' => $schedule->price,
+            'status' => 'confirmed', 
+            'qr_token' => (string) \Illuminate\Support\Str::uuid(),
+            'is_qr_used' => false
+        ]);
+
+        Payment::create([
+            'order_id' => $order->id,
+            'user_id' => $user->id,
+            'bank_name' => 'CASH/MANUAL',
+            'account_name' => 'ADMIN: ' . \Illuminate\Support\Facades\Auth::user()->name,
+            'amount' => $schedule->price,
+            'proof_image' => 'manual',
+            'status' => 'verified'
+        ]);
+
+        $seat->update(['status' => 'booked']);
+
+        return redirect('/admin/orders')->with('success', 'Pesanan manual berhasil dibuat untuk kursi: ' . $seat->seat_number);
     }
     public function driverLetters() { 
         $schedules = Schedule::with(['route.origin', 'route.destination'])->orderBy('departure_date', 'asc')->get();

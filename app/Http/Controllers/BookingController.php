@@ -11,12 +11,6 @@ use Illuminate\Support\Facades\Auth;
 
 class BookingController extends Controller
 {
-    // Pastikan hanya customer yang bisa pesan
-    public function __construct()
-    {
-        $this->middleware(['auth', 'role:customer']);
-    }
-
     public function seat(Schedule $schedule)
     {
         $seats = $schedule->seats()->orderBy('seat_number')->get();

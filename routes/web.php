@@ -49,7 +49,14 @@ Route::prefix('admin')->middleware(['auth', 'role:admin'])->group(function () {
 
     // Other pages
     Route::get('/schedules', [AdminController::class, 'schedules']);
+    Route::get('/schedules/create', [AdminController::class, 'createSchedule']);
+    Route::post('/schedules', [AdminController::class, 'storeSchedule']);
+    Route::get('/schedules/{schedule}/edit', [AdminController::class, 'editSchedule']);
+    Route::put('/schedules/{schedule}', [AdminController::class, 'updateSchedule']);
+    Route::delete('/schedules/{schedule}', [AdminController::class, 'deleteSchedule']);
     Route::get('/orders', [AdminController::class, 'orders']);
+    Route::get('/orders/create', [AdminController::class, 'createOrder']);
+    Route::post('/orders', [AdminController::class, 'storeOrder']);
     Route::get('/driver-letters', [AdminController::class, 'driverLetters']);
     Route::get('/schedules/{schedule}/surat-jalan', [AdminController::class, 'downloadSuratJalan']);
     Route::get('/cities', [AdminController::class, 'cities']);
